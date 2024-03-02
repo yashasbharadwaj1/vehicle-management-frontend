@@ -34,7 +34,7 @@ function logout() {
 
 // Fetch vendors function
 function fetchVendors() {
-    fetch('http://127.0.0.1:8000/api/list/vendors/', {
+    fetch('http://127.0.0.1:8000/api/customer/list/vendors/', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ function submitVendorSelection(vendorId) {
 
     
     // Send a GET request to the API endpoint
-    fetch(`http://127.0.0.1:8000/api/list/vehicles/${vendorId}/`, {
+    fetch(`http://127.0.0.1:8000/api/customer/list/vehicles/${vendorId}/`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ function submitVendorSelection(vendorId) {
         table.appendChild(tbody);
 
         // Create table headers for the specified vehicle fields
-        var headers = ['Vehicle ID', 'Name', 'Number', 'Price', 'Vendor Name', 'Vendor Details', 'Product Image', 'Book'];
+        var headers = ['Name', 'Number', 'Price', 'Vendor Name', 'Vendor Details', 'Product Image', 'Book'];
         var tr = document.createElement('tr');
         headers.forEach(header => {
             var th = document.createElement('th');
@@ -101,7 +101,7 @@ function submitVendorSelection(vendorId) {
             tbody.appendChild(tr);
 
             // Create table cells for the specified vehicle fields
-            var fields = ['id', 'name', 'number', 'price', 'vendor_name', 'vendor_details', 'product_image'];
+            var fields = ['name', 'number', 'price', 'vendor_name', 'vendor_details', 'product_image'];
             fields.forEach(field => {
                 var td = document.createElement('td');
                 if (field === 'product_image') {
@@ -122,8 +122,9 @@ function submitVendorSelection(vendorId) {
             var button = document.createElement('button');
             button.textContent = 'Book';
             button.onclick = function() {
-                // Implement your book logic here
-                console.log('Book vehicle:', vehicle.id);
+                //console.log(vehicle.vendor, vehicle.id, user_id)
+                bookVehicle(vehicle.vendor, vehicle.id, user_id);
+
             };
             td.appendChild(button);
             tr.appendChild(td);
@@ -137,6 +138,51 @@ function submitVendorSelection(vendorId) {
     .catch(error => console.error('Error fetching vehicles:', error));
 }
 
+
+function bookVehicle(vendorId, productId, userId) {
+    // Get the delivery date from the user
+    var deliveryDate = prompt('Enter delivery date (YYYY-MM-DD):');
+    if (!deliveryDate) {
+        alert('Delivery date is required.');
+        return;
+    }
+
+    // Validate the delivery date
+    var currentDate = new Date();
+    var maxDeliveryDate = new Date(currentDate.getTime() + 30 * 24 * 60 * 60 * 1000); // Maximum range is 30 days from the current date
+    if (new Date(deliveryDate) < currentDate || new Date(deliveryDate) > maxDeliveryDate) {
+        alert('Please choose a date within the next 30 days. Note that you cannot expect delivery on the same day.');
+        return;
+    }
+
+    // Format the dates
+    var formattedDateOfBooking = currentDate.toISOString().split('T')[0]; // Get the 'YYYY-MM-DD' part
+    var formattedDeliveryDate = new Date(deliveryDate).toISOString().split('T')[0]; // Get the 'YYYY-MM-DD' part
+
+    // Send a POST request to the API endpoint
+    fetch('http://127.0.0.1:8000/api/customer/create/order/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + accessToken
+        },
+        body: JSON.stringify({
+            vendor_id: vendorId,
+            product_id: productId,
+            user_id: userId,
+            date_of_booking: formattedDateOfBooking, // Use the formatted date
+            delivery_date: formattedDeliveryDate // Use the formatted date
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Order sent:', data);
+    })
+    .catch(error => {
+        console.error('Error creating order:', error);
+        alert('Error creating order:', error);
+    });
+}
 
 
 

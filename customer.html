@@ -1,23 +1,52 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <title>Customer</title>
-</head>
-<body>
+  </head>
+
+  <body>
     <div>
-        <p>Hi <span id="username"></span></p>
-        <a href="index.html">Home</a>
-        <button onclick="logout()">Logout</button>
+      <h5>Namaste<h5 id="username"></h5></h5>
     </div>
 
+    <div>
+      <a href="index.html">Home</a>
+    </div>
+
+    <div>
+      <button onclick="logout()">Logout</button>
+    </div>
+    <div id="refreshButtonDiv">
+      <button onclick="refreshPage()">Refresh</button>
+    </div>
     <div id="buyVehicleDiv">
-        <button onclick="chooseVendor()">Buy Vehicle</button>
+      <button onclick="chooseVendor()">Buy Vehicle</button>
     </div>
 
-    <div id="vendorDiv" style="display: none;">
-        <select id="vendorSelect"></select>
-        <button id="submitButton" onclick="submitVendorSelection(document.getElementById('vendorSelect').value)">Submit</button>
+    <div id="vendorDiv" style="display: none">
+      <select id="vendorSelect"></select>
+      <button
+        id="submitButton"
+        onclick="submitVendorSelection(document.getElementById('vendorSelect').value)"
+      >
+        Submit
+      </button>
     </div>
+
+    <div id="myBookingsDiv">
+      <button id="myBookingsButton" onclick="listBookings()">
+        My Bookings
+      </button>
+    </div>
+
+    <div id="checkInButtonDiv">
+        <button onclick="showCheckInForm()">Check-In</button>
+    </div>
+      
     <script src="customer.js"></script>
-</body>
+  </body>
 </html>

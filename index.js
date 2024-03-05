@@ -81,7 +81,7 @@ $(document).ready(function() {
                         window.location.href = 'qa_agent.html';
                         break;
                     case 'checkout_agent':
-                        window.location.href = 'checkout_agent.html';
+                        window.location.href = 'security_agent.html';
                         break;
                     default:
                         alert('Invalid user type');

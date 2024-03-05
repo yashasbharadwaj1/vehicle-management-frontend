@@ -380,7 +380,7 @@ function sendCheckInData(data) {
 
 function viewCheckinStatus() {
   get_checkin_status(user_id);
-  document.getElementById("myBookingsButton").style.display = "none";
+  //document.getElementById("checkinTableContainer").style.display = "none";
 }
 
 function get_checkin_status(user_id) {
@@ -393,6 +393,9 @@ function get_checkin_status(user_id) {
   })
   .then(response => response.json())
   .then(data => {
+    if (data.msg){
+      alert(data.msg);
+    }
       
       console.log("Checkin status:", data);
 
@@ -452,7 +455,6 @@ function get_checkin_status(user_id) {
   })
   .catch(error => {
       console.error("Error fetching checkin status:", error);
-      alert("Error fetching checkin status:", error);
   });
 }
 

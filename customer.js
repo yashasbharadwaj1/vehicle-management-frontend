@@ -289,7 +289,6 @@ function refreshPage() {
 }
 
 function showCheckInForm() {
-  
   var form = document.createElement("form");
   form.id = "checkInForm";
 
@@ -345,9 +344,8 @@ function showCheckInForm() {
     for (var pair of formData.entries()) {
       checkInData[pair[0]] = pair[1];
     }
-    sendCheckInData(checkInData); 
+    sendCheckInData(checkInData);
     document.getElementById("checkInButtonDiv").style.display = "none";
-    
   });
 }
 
@@ -364,22 +362,98 @@ function sendCheckInData(data) {
       return response.json();
     })
     .then((data) => {
-      
-      if (data.msg){
-        alert(data.msg)
-      }
-      else{
+      if (data.msg) {
+        alert(data.msg);
+      } else {
         console.log("Check-in data sent:", data);
-        alert("Check-in data sent") 
-        alert("Checkin Intiated. Next steps:- 1. Qa agent will be approve or diapprove the checkout  , 2.if Qa agent has approved then security agent will approve or disapprove the checkout , 3.if either Qa agent or security diapproves the checkout then the appropriate reasons will be conveyed to you and then things will be sorted for speedy checkout with mutual consent ")
+        alert("Check-in data sent");
+        alert(
+          "Checkin Intiated. Next steps:- 1. Qa agent will be approve or diapprove the checkout  , 2.if Qa agent has approved then security agent will approve or disapprove the checkout , 3.if either Qa agent or security diapproves the checkout then the appropriate reasons will be conveyed to you and then things will be sorted for speedy checkout with mutual consent "
+        );
       }
-      
     })
     .catch((error) => {
       console.error("Error sending check-in data:", error);
       alert("Error sending check-in data:", error);
     });
 }
+
+function viewCheckinStatus() {
+  get_checkin_status(user_id);
+  document.getElementById("myBookingsButton").style.display = "none";
+}
+
+function get_checkin_status(user_id) {
+  fetch(`http://127.0.0.1:8000/api/customer/checkins/info/${user_id}/`, {
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + accessToken,
+      },
+  })
+  .then(response => response.json())
+  .then(data => {
+      
+      console.log("Checkin status:", data);
+
+      // Create a table to display the checkin information
+      var table = document.createElement('table');
+      var thead = document.createElement('thead');
+      var tbody = document.createElement('tbody');
+
+      // Define table headers
+      var headers = [
+          "Purchase Order ",
+          //"ID",
+          //"Checkin Initiated",
+          "QA Assured",
+          "Security Assured",
+          "QA Rejection Reason",
+          "Security Rejection Reason",
+          //"Order ID",
+          //"User ID",
+
+          
+      ];
+
+      // Create table header row
+      var headerRow = document.createElement('tr');
+      headers.forEach(headerText => {
+          var th = document.createElement('th');
+          th.textContent = headerText;
+          headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+
+      // Create table body rows
+      data.forEach(checkin => {
+          var row = document.createElement('tr');
+          row.innerHTML = `
+              <td>${checkin.purchase_order_number}</td>
+              <td>${checkin.qa_assured}</td>
+              <td>${checkin.security_assured}</td>
+              <td>${checkin.qa_rejection_reason}</td>
+              <td>${checkin.security_rejection_reason}</td>
+ 
+          `;
+          tbody.appendChild(row);
+      });
+
+      // Append thead and tbody to the table
+      table.appendChild(thead);
+      table.appendChild(tbody);
+
+      // Append the table to a container element in the HTML
+      var container = document.getElementById('checkinTableContainer');
+      container.innerHTML = ''; // Clear previous content
+      container.appendChild(table);
+  })
+  .catch(error => {
+      console.error("Error fetching checkin status:", error);
+      alert("Error fetching checkin status:", error);
+  });
+}
+
 
 // Fetch data when the page loads
 //fetchVendors();

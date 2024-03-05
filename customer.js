@@ -410,6 +410,7 @@ function get_checkin_status(user_id) {
           "Security Assured",
           "QA Rejection Reason",
           "Security Rejection Reason",
+          "Final checkout Done"
           //"Order ID",
           //"User ID",
 
@@ -434,6 +435,7 @@ function get_checkin_status(user_id) {
               <td>${checkin.security_assured}</td>
               <td>${checkin.qa_rejection_reason}</td>
               <td>${checkin.security_rejection_reason}</td>
+              <td>${checkin.is_final_checkout_done}</td>
  
           `;
           tbody.appendChild(row);

@@ -38,3 +38,6 @@ function refreshPage() {
 }
 
 
+function startqa(){
+
+}
